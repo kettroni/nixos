@@ -40,6 +40,7 @@
 in {
   imports = [
     nix-index-database.hmModules.nix-index
+    ./modules/git.nix
   ];
 
   home.stateVersion = "22.11";
@@ -56,7 +57,6 @@ in {
     stable-packages
     ++ unstable-packages
     ++
-    # FIXME: you can add anything else that doesn't fit into the above two lists in here
     [
       # pkgs.some-package
       # pkgs.unstable.some-other-package
@@ -71,7 +71,10 @@ in {
     nix-index.enableZshIntegration = true;
     nix-index-database.comma.enable = true;
 
-    # FIXME: disable this if you don't want to use the starship prompt
+    neovim = {
+      
+    };
+
     starship.enable = true;
     starship.settings = {
       git_branch.style = "242";
@@ -82,7 +85,6 @@ in {
       hostname.style = "bold green";
     };
 
-    # FIXME: disable whatever you don't want
     fzf.enable = true;
     fzf.enableZshIntegration = true;
     lsd.enable = true;
@@ -96,41 +98,6 @@ in {
     direnv.enableZshIntegration = true;
     direnv.nix-direnv.enable = true;
 
-    git = {
-      enable = true;
-      package = pkgs.unstable.git;
-      delta.enable = true;
-      delta.options = {
-        line-numbers = true;
-        side-by-side = true;
-        navigate = true;
-      };
-      userEmail = "ronikettunen96@gmail.com"; # FIXME: set your git email
-      userName = "kettroni"; #FIXME: set your git username
-      extraConfig = {
-        # FIXME: uncomment the next lines if you want to be able to clone private https repos
-        # url = {
-        #   "https://oauth2:${secrets.github_token}@github.com" = {
-        #     insteadOf = "https://github.com";
-        #   };
-        #   "https://oauth2:${secrets.gitlab_token}@gitlab.com" = {
-        #     insteadOf = "https://gitlab.com";
-        #   };
-        # };
-        push = {
-          default = "current";
-          autoSetupRemote = true;
-        };
-        merge = {
-          conflictstyle = "diff3";
-        };
-        diff = {
-          colorMoved = "default";
-        };
-      };
-    };
-
-    # FIXME: This is my .zshrc - you can fiddle with it if you want
     zsh = {
       enable = true;
       autocd = true;
@@ -169,7 +136,6 @@ in {
         refresh = "source ${config.home.homeDirectory}/.zshrc";
         show_path = "echo $PATH | tr ':' '\n'";
 
-        # FIXME: add more git aliases here if you want them
         gapa = "git add --patch";
         grpa = "git reset --patch";
         gst = "git status";
