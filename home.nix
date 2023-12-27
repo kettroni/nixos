@@ -8,83 +8,34 @@
   ...
 }: let
   unstable-packages = with pkgs.unstable; [
-    # FIXME: select your core binaries that you always want on the bleeding-edge
-    bat
-    bottom
-    coreutils
     curl
-    du-dust
-    fd
-    findutils
-    fx
     git
-    git-crypt
     htop
-    jq
-    killall
-    lunarvim
-    mosh
     neovim
-    procs
     ripgrep
-    sd
     tmux
-    tree
     unzip
-    vim
-    wget
-    zip
   ];
 
   stable-packages = with pkgs; [
-    # FIXME: customize these stable packages to your liking for the languages that you use
-
-    # key tools
-    gh # for bootstrapping
-    just
-
-    # core languages
-    rustup
-    go
+    # Langs
     lua
-    nodejs
-    python3
-    typescript
-
-    # rust stuff
-    cargo-cache
-    cargo-expand
-
-    # local dev stuf
-    mkcert
-    httpie
 
     # treesitter
     tree-sitter
 
     # language servers
-    ccls # c / c++
-    gopls
-    nodePackages.typescript-language-server
     pkgs.nodePackages.vscode-langservers-extracted # html, css, json, eslint
-    nodePackages.yaml-language-server
     sumneko-lua-language-server
     nil # nix
-    nodePackages.pyright
 
     # formatters and linters
     alejandra # nix
-    black # python
-    ruff # python
     deadnix # nix
-    golangci-lint
     lua52Packages.luacheck
-    nodePackages.prettier
     shellcheck
     shfmt
     statix # nix
-    sqlfluff
-    tflint
   ];
 in {
   imports = [
@@ -97,8 +48,7 @@ in {
     username = "${username}";
     homeDirectory = "/home/${username}";
 
-    sessionVariables.EDITOR = "lvim";
-    # FIXME: set your preferred $SHELL
+    sessionVariables.EDITOR = "nvim";
     sessionVariables.SHELL = "/etc/profiles/per-user/${username}/bin/zsh";
   };
 
@@ -113,7 +63,7 @@ in {
     ];
 
   # FIXME: if you want to version your LunarVim config, add it to the root of this repo and uncomment the next line
-  # home.file.".config/lvim/config.lua".source = ./lvim_config.lua;
+  # home.file.".config/nvim/init.lua".source = ./nvim/init.lua;
 
   programs = {
     home-manager.enable = true;
@@ -124,15 +74,10 @@ in {
     # FIXME: disable this if you don't want to use the starship prompt
     starship.enable = true;
     starship.settings = {
-      aws.disabled = true;
-      gcloud.disabled = true;
-      kubernetes.disabled = false;
       git_branch.style = "242";
       directory.style = "blue";
       directory.truncate_to_repo = false;
       directory.truncation_length = 8;
-      python.disabled = true;
-      ruby.disabled = true;
       hostname.ssh_only = false;
       hostname.style = "bold green";
     };
@@ -160,8 +105,8 @@ in {
         side-by-side = true;
         navigate = true;
       };
-      userEmail = ""; # FIXME: set your git email
-      userName = ""; #FIXME: set your git username
+      userEmail = "ronikettunen96@gmail.com"; # FIXME: set your git email
+      userName = "kettroni"; #FIXME: set your git username
       extraConfig = {
         # FIXME: uncomment the next lines if you want to be able to clone private https repos
         # url = {
