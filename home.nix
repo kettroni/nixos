@@ -13,8 +13,11 @@
     htop
     neovim
     ripgrep
-    tmux
     unzip
+    cmake
+    gcc
+    gnumake
+    libtool
   ];
 
   stable-packages = with pkgs; [
@@ -33,6 +36,8 @@ in {
 
     sessionVariables.EDITOR = "nvim";
     sessionVariables.SHELL = "/etc/profiles/per-user/${username}/bin/zsh";
+    sessionVariables.CMAKE_C_COMPILER = "gcc";
+    sessionVariables.CMAKE_MAKE_PROGRAM = "make";
   };
 
   home.packages =
@@ -75,9 +80,7 @@ in {
 
     emacs = {
       enable = true;
-      extraPackages = [
-        epkgs.nix-mode
-        epkgs.magit
+      extraPackages = epkgs: [
       ];
     };
 
