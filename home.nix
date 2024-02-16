@@ -1,32 +1,40 @@
 {
-  # FIXME: uncomment the next line if you want to reference your GitHub/GitLab access tokens and other secrets
-  # secrets,
-  config,
-  pkgs,
-  username,
-  nix-index-database,
-  ...
-}: let
+# FIXME: uncomment the next line if you want to reference your GitHub/GitLab access tokens and other secrets
+# secrets,
+config, pkgs, username, nix-index-database, ... }:
+let
   unstable-packages = with pkgs.unstable; [
+    # general
     curl
     git
     htop
     neovim
     ripgrep
     unzip
+    fd
+
+    # nix
+    nixfmt
+
+    # shell
+    shfmt
+    shellcheck
+
+    # c
     cmake
     gcc
     gnumake
     libtool
+
+    # clojure
+    clojure
+    clojure-lsp
+    cljfmt
   ];
 
-  stable-packages = with pkgs; [
-  ];
+  stable-packages = with pkgs; [ ];
 in {
-  imports = [
-    nix-index-database.hmModules.nix-index
-    ./modules/git.nix
-  ];
+  imports = [ nix-index-database.hmModules.nix-index ./modules/git.nix ];
 
   home.stateVersion = "23.11";
 
@@ -40,14 +48,10 @@ in {
     sessionVariables.CMAKE_MAKE_PROGRAM = "make";
   };
 
-  home.packages =
-    stable-packages
-    ++ unstable-packages
-    ++
-    [
-      # pkgs.some-package
-      # pkgs.unstable.some-other-package
-    ];
+  home.packages = stable-packages ++ unstable-packages ++ [
+    # pkgs.some-package
+    # pkgs.unstable.some-other-package
+  ];
 
   programs = {
     home-manager.enable = true;
@@ -80,8 +84,7 @@ in {
 
     emacs = {
       enable = true;
-      extraPackages = epkgs: [
-      ];
+      extraPackages = epkgs: [ ];
     };
 
     zsh = {
