@@ -30,8 +30,6 @@
   services.xserver.enable = true;
 
   # Configure keymap in X11
-  services.xserver.xkb.layout = "fi";
-  services.xserver.xkb.options = "ctrl:nocaps, ctrl:swap_lwin_lctl, ctrl:swap_rwin_rctl";
   services.xserver.windowManager.qtile.enable = true;
   services.displayManager.autoLogin = {
     enable = true;
