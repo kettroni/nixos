@@ -73,12 +73,6 @@
   environment.systemPackages = with pkgs; [
     vim
     brightnessctl
-    alacritty
-    chromium
-    git
-    picom
-    rofi
-    nitrogen
     xfce.mousepad
   ];
 

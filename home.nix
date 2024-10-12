@@ -5,9 +5,14 @@
     username = "kettroni";
     homeDirectory = "/home/kettroni";
     stateVersion = "24.05"; # Don't change!
-    packages = [
-      (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
-      pkgs.emacs
+    packages = with pkgs; [
+      emacs
+      rofi
+      nitrogen
+      alacritty
+      chromium
+      git
+      picom
     ];
 
     file = {
