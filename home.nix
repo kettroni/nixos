@@ -1,10 +1,12 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, ... }: let
+  username = "kettroni";
+in {
   home = {
-    username = "kettroni";
-    homeDirectory = "/home/kettroni";
     stateVersion = "24.05"; # Don't change!
+
+    inherit username;
+    homeDirectory = "/home/${username}";
+
     packages = with pkgs; [
       emacs
       fira-code
