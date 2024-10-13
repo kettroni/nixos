@@ -5,6 +5,8 @@ in {
     ./emacs.nix
     ./fonts.nix
     ./keyboard.nix
+    ./qtile.nix
+    ./git.nix
   ];
 
   home = {
@@ -16,11 +18,8 @@ in {
     packages = with pkgs; [
       alacritty
       chromium
-      git
     ];
   };
-
-
   
   xsession = {
     enable = true;
