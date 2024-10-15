@@ -32,19 +32,20 @@
   hardware.bluetooth.enable = true;
 
   services = {
+    # Enable touchpad support (enabled default in most desktopManager).
+    libinput.enable = true;
+
+    xserver = {
+      enable = true;
+      windowManager.qtile = {
+        enable = true;
+      };
+    };
+
     # Auto login
     displayManager.autoLogin = {
       enable = true;
       user = "kettroni";
-    };
-
-    # Enable touchpad support (enabled default in most desktopManager).
-    libinput.enable = true;
-
-    # Enable the X11 windowing system.
-    xserver = {
-      enable = true;
-      windowManager.qtile.enable = true;
     };
 
     # Enable sound

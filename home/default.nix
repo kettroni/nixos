@@ -2,10 +2,11 @@
   username = "kettroni";
 in {
   imports = [
-    ./emacs.nix
+    ./alacritty.nix
+    ./emacs
     ./fonts.nix
     ./keyboard.nix
-    ./qtile.nix
+    ./qtile
     ./git.nix
   ];
 
@@ -16,8 +17,8 @@ in {
     homeDirectory = "/home/${username}";
 
     packages = with pkgs; [
-      alacritty
       chromium
+      feh
     ];
   };
   
