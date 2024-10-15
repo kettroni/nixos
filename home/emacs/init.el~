@@ -66,6 +66,14 @@
 (defun open-init-file ()
   (interactive)
   (sudo-edit "/etc/nixos/home/emacs/init.el"))
+(defun compile-bg ()
+  (interactive)
+  (compile)
+  (delete-other-windows))
+(defun recompile-bg ()
+  (interactive)
+  (recompile)
+  (delete-other-windows))
 (defun compile-with-input ()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -93,10 +101,10 @@
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 (create-keymap
  'compile-map
- '(("k" . compile)
+ '(("k" . compile-bg)
    ("s" . compile-with-input)
    ("f" . open-compilation-buffer)
-   ("r" . recompile)))
+   ("r" . recompile-bg)))
 
 ;; eval-map
 (create-keymap

@@ -15,4 +15,8 @@
   home.file.".config/emacs/init.el" = {
     source = ./init.el;
   };
+  
+  home.file.".config/emacs/current-window-only/current-window-only.el" = {
+    source = ./current-window-only/current-window-only.el;
+  };
 }
