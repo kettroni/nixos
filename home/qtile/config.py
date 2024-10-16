@@ -66,16 +66,16 @@ keys = [
     #),
     EzKey("M-<Return>", lazy.spawn(terminal), desc="Launch terminal"),
     # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),
-    Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    EzKey("M-<tab>", lazy.next_layout(), desc="Toggle between layouts"),
+    EzKey("M-w", lazy.window.kill(), desc="Kill focused window"),
+    EzKey("M-m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),
+    EzKey("M-t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
+    EzKey("M-C-r", lazy.reload_config(), desc="Reload the config"),
+    EzKey("M-C-q", lazy.shutdown(), desc="Shutdown Qtile"),
     EzKey("M-r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    EzKey("M-S-e", lazy.spawn("alacritty -e sudo vim /etc/nixos/", shell=True)),
-    EzKey("M-e", lazy.spawn("emacs")),
+    EzKey("M-u", lazy.spawn("emacs")),
     EzKey("M-s", lazy.spawn("alacritty -e sudo nixos-rebuild switch --flake /etc/nixos#default", shell=True)),
+    EzKey("M-i", lazy.spawn("chromium"), desc="Open chromium"),
 
     # Audio config
     Key([], "XF86AudioLowerVolume", lazy.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")),
@@ -86,7 +86,6 @@ keys = [
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +10%")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 10%-")),
 
-    EzKey("M-y", lazy.spawn("chromium"), desc="Open chromium"),
 ]
 
 # Add key bindings to switch VTs in Wayland.
