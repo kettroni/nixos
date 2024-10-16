@@ -90,6 +90,9 @@
    ("s" . save-buffer)))
 
 ;; compile-map
+(add-to-list 'compilation-error-regexp-alist
+             '("\\([a-zA-Z0-9\\.]+\\)(\\([0-9]+\\)\\(,\\([0-9]+\\)\\)?) \\(Warning:\\)?"
+               1 2 (4) (5)))
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 (create-keymap
  'compile-map
