@@ -41,6 +41,7 @@
         };
       };
     };
+    
     bash = {
       enable = true;
       shellAliases = {
@@ -53,6 +54,12 @@
         gs = "sudo git status";
         gd = "sudo git diff";
       };
+    };
+
+    direnv = {
+      enable = true;
+      enableBashIntegration = true; # see note on other shells below
+      nix-direnv.enable = true;
     };
   };
 }

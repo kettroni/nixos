@@ -11,21 +11,25 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setopt use-short-answers t)
 (setq frame-resize-pixelwise t)
+(setq truncate-lines t)
 
 ;; theme
-(use-package doom-themes
-  :init (load-theme 'doom-gruvbox t))
+(setq custom-safe-themes t)
+(use-package gruber-darker-theme
+  :init (load-theme 'gruber-darker))
+;; (use-package doom-themes
+;;   :init (load-theme 'doom-gruvbox t))
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 10)))
-(with-eval-after-load 'doom-themes
-  ;; Darken the overall background color (for Gruvbox Dark)
-  (set-face-attribute 'default nil :background "#1b1d1e")
+;; (with-eval-after-load 'doom-themes
+;;   ;; Darken the overall background color (for Gruvbox Dark)
+;;   (set-face-attribute 'default nil :background "#1b1d1e")
 
-  ;; Increase contrast for comments
-  (set-face-attribute 'font-lock-comment-face nil
-                      :foreground "#a99984"
-                      :italic t))
+;;   ;; Increase contrast for comments
+;;   (set-face-attribute 'font-lock-comment-face nil
+;;                       :foreground "#a99984"
+;;                       :italic t))
 
 ;; fonts
 (set-face-attribute 'default nil :font "Fira Code" :height 130)
@@ -56,9 +60,13 @@
 (define-key magit-mode-map (kbd "x") 'magit-discard)
 
 ;; current-window-only
-(load "~/.config/emacs/current-window-only/current-window-only.el")
-(use-package current-window-only)
-(current-window-only-mode)
+;; (load "~/.config/emacs/current-window-only/current-window-only.el")
+;; (use-package current-window-only)
+;; (current-window-only-mode)
+
+;; direnv
+(use-package direnv)
+(direnv-mode)
 
 ;; vterm
 (use-package vterm)
@@ -89,61 +97,80 @@
 	       (delete-other-windows))
       (message "No compilation buffer exists."))))
 
-;; shell to use aliases
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
-
 ;; buffer-map
 (create-keymap
  'buffer-map
  '(("k" . kill-current-buffer)
-   ("s" . save-buffer)))
+   ("f" . save-buffer)))
 
 ;; compile-map
 (add-to-list 'compilation-error-regexp-alist
-             '("\\([a-zA-Z0-9\\.]+\\)(\\([0-9]+\\)\\(,\\([0-9]+\\)\\)?) \\(Warning:\\)?"
-               1 2 (4) (5)))
-(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+             'my-purs-errors)
+
+(add-to-list 'compilation-error-regexp-alist-alist
+             '(my-purs-errors
+               "\\[.*?\\] \\([^:]+\\):\\([0-9]+\\):\\([0-9]+\\)"
+               1 2 3))
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 (create-keymap
  'compile-map
  '(("k" . compile)
    ("s" . compile-with-input)
    ("f" . open-compilation-buffer)
-   ("r" . recompile)))
+   ("l" . recompile)
+   ("j" . amx)
+   ))
 
 ;; eval-map
 (create-keymap
  'eval-map
- '(("b" . eval-buffer)
-   ("r" . eval-region)))
+ '(("f" . eval-buffer)
+   ("j" . eval-region)))
 
 ;; file-map
 (create-keymap
  'file-map
- '(("f" . ido-find-file)
+ '(("j" . ido-find-file)
    ("i" . open-init-file)
    ("s" . scratch-buffer)
+   ("k" . ido-switch-buffer)
+   ))
+
+;; project-map
+(create-keymap
+ 'project-map
+ '(("l" . project-switch-project)
+   ("k" . project-compile)
+   ("f" . project-find-file)
+   ("d" . project-dired)
+   ("s" . project-find-regexp)
    ))
 
 ;; window-map
 (create-keymap
  'window-map
- '(("o" . delete-other-windows)
-   ("d" . delete-window)
+ '(("j" . delete-other-windows-internal)
+   ("k" . delete-window)
    ("s" . split-window-below)
-   ("v" . split-window-right)
-   ("h" . windmove-left)
-   ("j" . windmove-down)
-   ("k" . windmove-up)
-   ("l" . windmove-right)
-   ("b" . balance-windows)
-   ("w" . next-window-any-frame)))
+   ("d" . split-window-right)
+   ;; ("h" . windmove-left)
+   ;; ("j" . windmove-down)
+   ;; ("k" . windmove-up)
+   ;; ("l" . windmove-right)
+   ("f" . next-window-any-frame)))
 
 ;; meow-mode
 (use-package meow)
 
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-define-keys
+   'insert
+   '("C-ö" . meow-insert-exit))
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
@@ -167,11 +194,13 @@
    '("?" . meow-cheatsheet)
    '("." . ido-find-file)
    '("," . switch-to-buffer)
-   '("b" . buffer-map)
+   '("d" . buffer-map)
    '("k" . compile-map)
-   '("e" . eval-map)
+   '("a" . magit-status)
+   '("ö" . eval-map)
    '("f" . file-map)
-   '("w" . window-map))
+   '("j" . project-map)
+   '("l" . window-map))
   (meow-normal-define-key
    '("0" . meow-expand-0)
    '("9" . meow-expand-9)
@@ -196,10 +225,10 @@
    '("l" . meow-change)
    ;'("-" . meow-delete)
    ;'("_" . meow-backward-delete)
-   '("F" . meow-next-word)
-   '("f" . meow-next-symbol)
+   '("R" . meow-next-word)
+   '("r" . meow-next-symbol)
    '("z" . meow-find)
-   '("g" . meow-cancel-selection)
+   '("m" . meow-cancel-selection)
    '("G" . meow-grab)
    ;'("h" . meow-left)
    ;'("H" . meow-left-expand)
@@ -227,7 +256,7 @@
    '("v" . meow-visit)
    '("d" . meow-mark-word)
    '("D" . meow-mark-symbol)
-   '("r" . meow-line)
+   '("f" . meow-line)
    ;;'("X" . meow-goto-line)
    '("u" . meow-save)
    '("U" . meow-sync-grab)
@@ -235,6 +264,7 @@
    '("'" . repeat)
    '("<down>" . meow-page-down)
    '("<up>" . meow-page-up)
+   '("C-." . comment-dwim)
    '("<escape>" . ignore)))
 
 (with-eval-after-load 'meow
@@ -250,19 +280,43 @@
           (?d . square)
           (?s . curly)
           (?a . string)
-          (?j . symbol)
-          (?k . window)
-          (?h . buffer)
-          (?g . paragraph)
-          (?l . line)
-          (?r . defun)
+          (?g . symbol)
+          (?l . window)
+          (?k . buffer)
+          (?j . paragraph)
+          (?h . line)
+          (?m . defun)
           (?u . sentence))))
+
+(global-set-key (kbd "C-ö") 'keyboard-escape-quit)
 
 (meow-setup)
 (meow-global-mode 1)
 
-;; Langs
+;; langs
 
 ;; nix
 (use-package nix-mode
   :mode "\\.nix\\'")
+
+;; python
+(use-package python-mode)
+
+;; hy
+(use-package hy-mode)
+
+;; purescript
+(use-package purescript-mode)
+(use-package psc-ide)
+(use-package repl-toggle)
+(use-package psci)
+
+(add-hook 'purescript-mode-hook
+  (lambda ()
+    (psc-ide-mode)
+    (company-mode)
+    (flycheck-mode)
+    (turn-on-purescript-indentation)
+    (inferior-psci-mode)))
+
+(add-to-list 'rtog/mode-repl-alist '(purescript-mode . psci))

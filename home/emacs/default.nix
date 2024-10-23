@@ -10,6 +10,7 @@
       alwaysEnsure = true;
       package = pkgs.emacs-git;  # replace with pkgs.emacsPgtk, or another version if desired.
     })
+    pkgs.fd
   ];
   
   home.file.".config/emacs/init.el" = {
