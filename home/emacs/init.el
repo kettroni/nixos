@@ -11,7 +11,7 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setopt use-short-answers t)
 (setq frame-resize-pixelwise t)
-(setq truncate-lines t)
+(global-visual-line-mode 1)
 
 ;; theme
 (setq custom-safe-themes t)
