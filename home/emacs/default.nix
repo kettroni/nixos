@@ -17,7 +17,9 @@
     source = ./init.el;
   };
   
-  home.file.".config/emacs/current-window-only/current-window-only.el" = {
-    source = ./current-window-only/current-window-only.el;
+  home.file = {
+    ".config/emacs/auto-recompile/auto-recompile.el" = {
+      source = ./auto-recompile/auto-recompile.el;
+    };
   };
 }

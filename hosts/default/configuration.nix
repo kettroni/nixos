@@ -16,7 +16,7 @@
 
   networking = {
     hostName = "nixos";
-    wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+    networkmanager.enable = true;
   };
 
   # Set your time zone.
@@ -29,7 +29,18 @@
   };
 
   # Enable bluetooth
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
+  };
+
 
   services = {
     # Enable touchpad support (enabled default in most desktopManager).
@@ -73,18 +84,26 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    git
+    man-pages
+    man-pages-posix
     vim
     brightnessctl
     xfce.mousepad
   ];
+  documentation = {
+    man.enable = true;
+    dev.enable = true;
+  };
 
   # Define a user account.
   users.users.kettroni = {
     isNormalUser = true;
-    extraGroups = [ 
+    extraGroups = [
       "wheel"  # Enable ‘sudo’ for the user.
       "audio"
       "video"
+      "networkmanager"
    ];
   };
 
@@ -97,4 +116,3 @@
 
   system.stateVersion = "24.05"; # Did you read the comment?
 }
-

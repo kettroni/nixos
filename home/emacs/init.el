@@ -17,28 +17,19 @@
 (setq custom-safe-themes t)
 (use-package gruber-darker-theme
   :init (load-theme 'gruber-darker))
-;; (use-package doom-themes
-;;   :init (load-theme 'doom-gruvbox t))
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 10)))
-;; (with-eval-after-load 'doom-themes
-;;   ;; Darken the overall background color (for Gruvbox Dark)
-;;   (set-face-attribute 'default nil :background "#1b1d1e")
+  :custom ((doom-modeline-height 5)))
 
-;;   ;; Increase contrast for comments
-;;   (set-face-attribute 'font-lock-comment-face nil
-;;                       :foreground "#a99984"
-;;                       :italic t))
 
 ;; fonts
-(set-face-attribute 'default nil :font "Fira Code" :height 130)
-(set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 130)
-(set-face-attribute 'variable-pitch nil :font "Fira Code" :height 130 :weight 'regular)
+(set-face-attribute 'default nil :font "Fira Code" :height 170)
+(set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 170)
+(set-face-attribute 'variable-pitch nil :font "Fira Code" :height 170 :weight 'regular)
 
 ;; ido
-(setq ido-everywhere t)
 (ido-mode 1)
+(ido-everywhere 1)
 (setq ido-enable-flex-matching t)
 (setq ido-separator "\n")
 (setq ido-show-dot-for-dired t)
@@ -48,28 +39,52 @@
 (define-key ido-common-completion-map (kbd "C-p") 'ido-prev-match)
 
 ;; amx
-(use-package amx)
-(amx-mode 1)
+(use-package amx
+  :config (amx-mode 1))
 
 ;; company
-(use-package company)
-(global-company-mode)
+(use-package company
+  :config (global-company-mode))
 
 ;; magit
-(use-package magit)
-(define-key magit-mode-map (kbd "x") 'magit-discard)
+(use-package magit
+  :bind
+  (:map magit-mode-map
+   ("x" . magit-discard)))
 
-;; current-window-only
-;; (load "~/.config/emacs/current-window-only/current-window-only.el")
-;; (use-package current-window-only)
-;; (current-window-only-mode)
+(defun magit-status-fullscreen ()
+  (interactive)
+  (command-and-close-others 'magit-status))
+
+;; auto-recompile
+(load "~/.config/emacs/auto-recompile/auto-recompile.el")
+(use-package auto-recompile)
 
 ;; direnv
-(use-package direnv)
-(direnv-mode)
+(use-package direnv
+  :config (direnv-mode))
 
 ;; vterm
 (use-package vterm)
+
+;; harpoon
+(use-package harpoon
+  :bind
+  ("C-1" . 'harpoon-go-to-1)
+  ("C-2" . 'harpoon-go-to-2)
+  ("C-3" . 'harpoon-go-to-3)
+  ("C-4" . 'harpoon-go-to-4)
+  ("C-5" . 'harpoon-go-to-5)
+  ("C-6" . 'harpoon-go-to-6)
+  ("C-7" . 'harpoon-go-to-7)
+  ("C-8" . 'harpoon-go-to-8)
+  ("C-9" . 'harpoon-go-to-9)
+  ("C-0" . 'harpoon-add-file))
+
+;; drag-stuff
+(use-package drag-stuff)
+(drag-stuff-global-mode 1)
+(drag-stuff-define-keys)
 
 ;; Helpers
 (defun create-keymap (keymap-name bindings)
@@ -77,13 +92,9 @@
   (mapc (lambda (binding)
           (define-key keymap-name (car binding) (cdr binding)))
         bindings))
-(defun sudo-edit (file)
-  "Edit FILE with root privileges."
-  (interactive "FOpen file as root: ")
-  (find-file (concat "/sudo::" file)))
 (defun open-init-file ()
   (interactive)
-  (sudo-edit "/etc/nixos/home/emacs/init.el"))
+  (find-file "/home/kettroni/nixos/home/emacs/init.el"))
 (defun compile-with-input ()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -93,15 +104,20 @@
   (interactive)
   (let ((compilation-buffer "*compilation*"))
     (if (get-buffer compilation-buffer)
-	(progn (pop-to-buffer compilation-buffer)
-	       (delete-other-windows))
+    (progn (pop-to-buffer compilation-buffer)
+           (delete-other-windows))
       (message "No compilation buffer exists."))))
 
+(defun command-and-close-others (command)
+  (interactive)
+  (call-interactively command)
+  (delete-other-windows-internal))
+
 ;; buffer-map
-(create-keymap
- 'buffer-map
- '(("k" . kill-current-buffer)
-   ("f" . save-buffer)))
+(create-keymap 'buffer-map
+               '(("k" . kill-current-buffer)
+                 ("f" . save-buffer)
+                 ("j" . meow-last-buffer)))
 
 ;; compile-map
 (add-to-list 'compilation-error-regexp-alist
@@ -116,52 +132,50 @@
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region (point-min) (point-max))))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-(create-keymap
- 'compile-map
- '(("k" . compile)
-   ("s" . compile-with-input)
-   ("f" . open-compilation-buffer)
-   ("l" . recompile)
-   ("j" . amx)
-   ))
+(create-keymap 'compile-map
+               '(("k" . compile)
+                 ("s" . compile-with-input)
+                 ("f" . open-compilation-buffer)
+                 ("l" . recompile)
+                 ("j" . amx)))
 
 ;; eval-map
-(create-keymap
- 'eval-map
- '(("f" . eval-buffer)
-   ("j" . eval-region)))
+(create-keymap 'eval-map
+               '(("f" . eval-buffer)
+                 ("j" . eval-region)))
 
 ;; file-map
-(create-keymap
- 'file-map
- '(("j" . ido-find-file)
-   ("i" . open-init-file)
-   ("s" . scratch-buffer)
-   ("k" . ido-switch-buffer)
-   ))
+(create-keymap 'file-map
+               '(("j" . ido-find-file)
+                 ("i" . open-init-file)
+                 ("s" . scratch-buffer)
+                 ("k" . ido-switch-buffer)
+                 ))
+
+(defun project-find-thing-at-point (word)
+  (interactive)
+  (project-find-regexp word))
 
 ;; project-map
-(create-keymap
- 'project-map
- '(("l" . project-switch-project)
-   ("k" . project-compile)
-   ("f" . project-find-file)
-   ("d" . project-dired)
-   ("s" . project-find-regexp)
-   ))
+(create-keymap 'project-map
+               '(("l" . project-switch-project)
+                 ("k" . project-compile)
+                 ("f" . project-find-file)
+                 ("d" . project-dired)
+                 ("s" . project-find-regexp)
+                 ))
 
 ;; window-map
-(create-keymap
- 'window-map
- '(("j" . delete-other-windows-internal)
-   ("k" . delete-window)
-   ("s" . split-window-below)
-   ("d" . split-window-right)
-   ;; ("h" . windmove-left)
-   ;; ("j" . windmove-down)
-   ;; ("k" . windmove-up)
-   ;; ("l" . windmove-right)
-   ("f" . next-window-any-frame)))
+(create-keymap 'window-map
+               '(("j" . delete-other-windows-internal)
+                 ("k" . delete-window)
+                 ("s" . split-window-below)
+                 ("d" . split-window-right)
+                 ;; ("h" . windmove-left)
+                 ;; ("j" . windmove-down)
+                 ;; ("k" . windmove-up)
+                 ;; ("l" . windmove-right)
+                 ("f" . next-window-any-frame)))
 
 ;; meow-mode
 (use-package meow)
@@ -196,7 +210,7 @@
    '("," . switch-to-buffer)
    '("d" . buffer-map)
    '("k" . compile-map)
-   '("a" . magit-status)
+   '("a" . magit-status-fullscreen)
    '("ö" . eval-map)
    '("f" . file-map)
    '("j" . project-map)
@@ -220,7 +234,7 @@
    '("i" . meow-end-of-thing)
    '("ö" . meow-append)
    '("Ö" . meow-open-below)
-   '("S" . meow-back-word)
+   ;; '("S" . meow-back-word)
    '("s" . meow-back-symbol)
    '("l" . meow-change)
    ;'("-" . meow-delete)
@@ -271,12 +285,14 @@
   ;; Bind `x` to start recording a macro
   (define-key meow-normal-state-keymap (kbd "x") 'kmacro-start-macro-or-insert-counter)
   ;; Bind `X` to stop recording a macro
-  (define-key meow-normal-state-keymap (kbd "X") 'kmacro-end-or-call-macro))
+  (define-key meow-normal-state-keymap (kbd "X") 'kmacro-end-or-call-macro)
+  ;; Bind to do the macro
+  (define-key meow-normal-state-keymap (kbd "C-q") 'kmacro-call-macro))
 
 (with-eval-after-load 'meow
   ;; Copy original meow-char-thing-table and modify
   (setq meow-char-thing-table
-	'((?f . round)
+    '((?f . round)
           (?d . square)
           (?s . curly)
           (?a . string)
@@ -320,3 +336,76 @@
     (inferior-psci-mode)))
 
 (add-to-list 'rtog/mode-repl-alist '(purescript-mode . psci))
+
+;; clojure
+(use-package clojure-mode)
+
+(defun cider-switch-repl ()
+  (interactive)
+  (command-and-close-others 'cider-switch-to-repl-buffer))
+
+(defun cider-switch-clj ()
+  (interactive)
+  (command-and-close-others 'cider-switch-to-last-clojure-buffer))
+
+(defun cider-reload-and-rerun-test ()
+  (interactive)
+  (cider-load-buffer)
+  (cider-test-rerun-test))
+
+(defun cider-doc-fs ()
+  (interactive)
+  (command-and-close-others 'cider-doc))
+
+(use-package cider
+  :init
+  (setq cider-default-cljs-repl 'nbb)
+  :bind
+  (:map clojure-mode-map
+        ("M-o" . cider-switch-repl)
+        ("M-r" . cider-eval-dwim)
+        ("M-t" . cider-reload-and-rerun-test)
+        ("M-K" . cider-doc-fs)
+        ("M-L" . cider-load-buffer)
+   :map cider-repl-mode-map
+        ("M-o" . cider-switch-clj)))
+
+;; jank
+(add-to-list 'auto-mode-alist '("\\.jank\\'" . clojure-mode))
+
+;; fsharp
+(use-package fsharp-mode)
+
+;; dired
+(setq dired-dwim-target t)
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "-") 'dired-up-directory))
+
+;; global
+(keymap-global-set "C-+" 'text-scale-increase)
+(keymap-global-set "C--" 'text-scale-decrease)
+(keymap-global-set "C-c i" 'man)
+
+;; This helper adds advice, which will maximize the buffer created from fn
+(defun add-advice-maximize (fn-name)
+  (advice-add fn-name :around
+              (lambda (orig-fun &rest args)
+                (let ((result (apply orig-fun args)))
+                  (delete-window)
+                  result))))
+(add-advice-maximize 'compile)
+(add-advice-maximize 'recompile)
+(add-advice-maximize 'man)
+
+;; Disable tabs and use spaces instead
+(setq-default indent-tabs-mode nil) ; Use spaces instead of tabs
+(setq-default tab-width 4)          ; Set the default tab width to 4 spaces
+(setq-default standard-indent 4)    ; Set standard indentation to 4 spaces
+
+;; lsp
+(use-package lsp-mode
+  :init
+  (add-hook 'clojure-mode-hook #'lsp)
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (lsp-enable-which-key-integration t))
