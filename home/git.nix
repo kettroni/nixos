@@ -3,7 +3,9 @@
 {
   programs.git = {
     enable = true;
-    userEmail = "ronikettunen96@gmail.com";
-    userName = "kettroni";
+    settings.user = {
+      email = "ronikettunen96@gmail.com";
+      name = "kettroni";
+    };
   };
 }

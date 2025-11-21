@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; sane defaults
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
@@ -409,3 +410,6 @@
   :config
   (setq lsp-headerline-breadcrumb-enable nil)
   (lsp-enable-which-key-integration t))
+
+;; eca
+(use-package eca)

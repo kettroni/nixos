@@ -15,7 +15,7 @@ in {
     opacityRules = [
       "85:class_g = 'Alacritty'"
       "85:class_g = 'Emacs'"
-      "95:class_g = 'Chromium'"
+      "95:class_g = 'Chromium-browser'"
     ];
 
     # It is often helpful to set a specific backend that works well with your system

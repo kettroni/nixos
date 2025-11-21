@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
     ];
 
+  nix.package = pkgs.nixVersions.latest;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Use the systemd-boot EFI boot loader.

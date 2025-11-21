@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;; auto-recompile.el - compile while you think
 ;;
 ;; $Id: auto-recompile.el,v 1.5 2012-03-04 07:06:50 hubbe Exp $
