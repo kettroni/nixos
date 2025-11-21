@@ -30,76 +30,38 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
 mod = "mod4"
-terminal = guess_terminal()
+terminal = "alacritty"
 
 keys = [
-    # A list of available commands that can be bound to keys can be found
-    # at https://docs.qtile.org/en/latest/manual/config/lazy.html
-    # Switch between windows
-    #Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    #Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    #Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    #Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+    # https://docs.qtile.org/en/latest/manual/config/lazy.html
+
+    # window functions
     EzKey("M-h", lazy.layout.next(), desc="Move window focus to other window"),
-    # Move windows between left/right columns or move up/down in current stack.
-    # Moving out of range in Columns layout will create new column.
-    #Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    #Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    #Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    #Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
-    # Grow windows. If current window is on the edge of screen and direction
-    # will be to screen edge - window would shrink.
-    #Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    #Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
-    #Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
-    #Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    #Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-    #Key(
-    #    [mod, "shift"],
-    #    "Return",
-    #    lazy.layout.toggle_split(),
-    #    desc="Toggle between split and unsplit sides of stack",
-    #),
     EzKey("M-<Return>", lazy.spawn(terminal), desc="Launch terminal"),
-    # Toggle between different layouts as defined below
     EzKey("M-<tab>", lazy.next_layout(), desc="Toggle between layouts"),
     EzKey("M-w", lazy.window.kill(), desc="Kill focused window"),
     EzKey("M-m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window"),
     EzKey("M-t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
+
+    # qtile
     EzKey("M-C-r", lazy.reload_config(), desc="Reload the config"),
     EzKey("M-C-q", lazy.shutdown(), desc="Shutdown Qtile"),
+
+    # Programs
     EzKey("M-r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     EzKey("M-u", lazy.spawn("emacs")),
-    EzKey("M-s", lazy.spawn("alacritty -e sudo nixos-rebuild switch --flake /etc/nixos#default", shell=True)),
+    EzKey("M-s", lazy.spawn("alacritty -e sudo nixos-rebuild switch --flake /home/kettroni/nixos#default", shell=True)),
     EzKey("M-i", lazy.spawn("chromium"), desc="Open chromium"),
 
-    # Audio config
+    # Audio
     Key([], "XF86AudioLowerVolume", lazy.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-")),
     Key([], "XF86AudioRaiseVolume", lazy.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+")),
     Key([], "XF86AudioMute", lazy.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")),
 
-    # Brightness config
+    # Brightness
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +10%")),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 10%-")),
-
 ]
-
-# Add key bindings to switch VTs in Wayland.
-# We can't check qtile.core.name in default config as it is loaded before qtile is started
-# We therefore defer the check until the key binding is run by using .when(func=...)
-for vt in range(1, 8):
-    keys.append(
-        Key(
-            ["control", "mod1"],
-            f"f{vt}",
-            lazy.core.change_vt(vt).when(func=lambda: qtile.core.name == "wayland"),
-            desc=f"Switch to VT{vt}",
-        )
-    )
 
 groups = [Group(i) for i in "123456789"]
 
@@ -128,8 +90,8 @@ for i in groups:
     )
 
 
-for g,k in [('1', 'j'), 
-            ('2', 'k'), 
+for g,k in [('1', 'j'),
+            ('2', 'k'),
             ('3', 'l'),
             ]:
     keys.extend(
@@ -164,8 +126,8 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
-        #wallpaper="/home/kettroni/.config/qtile/background.png",
-        #wallpaper_mode="fill",
+        wallpaper="/home/kettroni/.config/qtile/background.png",
+        wallpaper_mode="stretch",
         bottom=bar.Bar(
             [
                 #widget.CurrentLayout(),
@@ -184,7 +146,6 @@ screens = [
                 # widget.StatusNotifier(),
                 #widget.Systray(),
                 #widget.Sep(),
-                #widget.Wallpaper(directory="~/Pictures/", wallpaper_command=['feh', '--bg-fill']),
                 widget.Sep(),
                 widget.Clock(format="%H:%M"), #widget.Clock(format="%H:%M %a %d-%m-%Y"),
                 widget.Sep(),
@@ -204,7 +165,7 @@ mouse = [
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: list
-follow_mouse_focus = True
+follow_mouse_focus = False
 bring_front_click = False
 floats_kept_above = True
 cursor_warp = False
@@ -240,4 +201,3 @@ wl_input_rules = None
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
-

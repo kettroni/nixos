@@ -10,6 +10,18 @@ in {
     ./git.nix
   ];
 
+  services.picom = {
+    enable = true;
+    opacityRules = [
+      "85:class_g = 'Alacritty'"
+      "85:class_g = 'Emacs'"
+      "95:class_g = 'Chromium'"
+    ];
+
+    # It is often helpful to set a specific backend that works well with your system
+    backend = "glx";
+  };
+
   home = {
     stateVersion = "24.05"; # Don't change!
 
@@ -21,7 +33,7 @@ in {
       feh
     ];
   };
-  
+
   xsession = {
     enable = true;
   };
