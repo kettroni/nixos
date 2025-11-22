@@ -1,8 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; fullscreen and as much space needed
-(setq frame-resize-pixelwise t)
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; TODO: fix this fullscreen :(
+;; (setq frame-resize-pixelwise t)
+;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (set-fringe-mode 0)
 
 ;; hide extra stuff
