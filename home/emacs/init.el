@@ -1,9 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; fullscreen and as much space needed
-;; TODO: fix this fullscreen :(
-;; (setq frame-resize-pixelwise t)
-;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(setq frame-resize-pixelwise t)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 (set-fringe-mode 0)
 
 ;; hide extra stuff
@@ -100,6 +99,12 @@
 ;; company
 (use-package company
   :config (global-company-mode))
+
+;; icicles (completion for minibuffer)
+(use-package icicles
+  ;; TODO: try out at some point
+  ;; :config (icy-mode)
+  )
 
 (defun command-and-close-others (command)
   (interactive)
