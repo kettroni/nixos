@@ -1,38 +1,61 @@
 ;; -*- lexical-binding: t; -*-
-;; sane defaults
+
+;; fullscreen and as much space needed
+(setq frame-resize-pixelwise t)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(set-fringe-mode 0)
+
+;; hide extra stuff
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
-(set-fringe-mode 10)
 (menu-bar-mode -1)
+
+;; misc nice to have things
 (setq visible-bell t)
 (column-number-mode)
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (setopt use-short-answers t)
-(setq frame-resize-pixelwise t)
 (global-visual-line-mode 1)
 (which-key-mode)
+
+;; misc hooks
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; theme
 (setq custom-safe-themes t)
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
 (load-theme 'gruber-darker)
 
-;; doom-modeline
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom
-  (doom-modeline-height 25)
-  (doom-modeline-bar-width 4)
-  (doom-modeline-buffer-file-name-style 'relative-from-project)
-  (doom-modeline-buffer-encoding nil))
-
 ;; fonts
 (set-face-attribute 'default nil :font "Fira Code" :height 170)
 (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 170)
 (set-face-attribute 'variable-pitch nil :font "Fira Code" :height 170 :weight 'regular)
+
+;; doom-modeline
+(use-package doom-modeline
+  :init
+  (doom-modeline-mode 1)
+
+  :config
+  (set-face-attribute 'mode-line-active nil :font "Fira Code" :height 140)
+
+  :custom
+  (doom-modeline-height 1)
+  (doom-modeline-bar-width 4)
+  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-modal-modern-icon nil)
+  (mode-line-right-align-edge 'right-fringe))
+
+;; yasnippet
+(use-package yasnippet
+  :init
+  (add-hook 'prog-mode-hook #'yas-minor-mode)
+  :config
+  (yas-reload-all))
 
 ;; rainbow-delimiters
 (use-package rainbow-delimiters
@@ -41,17 +64,24 @@
 ;; ido
 (ido-mode 1)
 (use-package ido-vertical-mode
-  :init (ido-vertical-mode 1)
+  :init
+  (ido-everywhere 1)
+  (ido-vertical-mode 1)
+
   :custom
-  (ido-vertical-show-count t))
-(ido-everywhere 1)
-(setq ido-enable-flex-matching t)
-(setq ido-separator "\n")
-(setq ido-show-dot-for-dired t)
-(use-package ido-completing-read+)
-(ido-ubiquitous-mode 1)
-(define-key ido-common-completion-map (kbd "C-n") 'ido-next-match)
-(define-key ido-common-completion-map (kbd "C-p") 'ido-prev-match)
+  (ido-auto-merge-work-directories-length -1)
+  (ido-vertical-show-count t)
+  (ido-enable-flex-matching t)
+  (ido-separator "\n")
+  (ido-show-dot-for-dired t))
+
+(use-package ido-completing-read+
+  :init
+  (ido-ubiquitous-mode 1)
+  :bind
+  (:map ido-common-completion-map
+   ("C-n" . 'ido-next-match)
+   ("C-p" . 'ido-prev-match)))
 
 ;; amx
 (use-package amx
@@ -68,6 +98,11 @@
 ;; company
 (use-package company
   :config (global-company-mode))
+
+(defun command-and-close-others (command)
+  (interactive)
+  (call-interactively command)
+  (delete-other-windows-internal))
 
 ;; magit
 (use-package magit
@@ -92,21 +127,26 @@
 ;; harpoon
 (use-package harpoon
   :bind
-  ("C-1" . 'harpoon-go-to-1)
-  ("C-2" . 'harpoon-go-to-2)
-  ("C-3" . 'harpoon-go-to-3)
-  ("C-4" . 'harpoon-go-to-4)
-  ("C-5" . 'harpoon-go-to-5)
-  ("C-6" . 'harpoon-go-to-6)
-  ("C-7" . 'harpoon-go-to-7)
-  ("C-8" . 'harpoon-go-to-8)
-  ("C-9" . 'harpoon-go-to-9)
-  ("C-0" . 'harpoon-add-file))
+  ("C-1" . harpoon-go-to-1)
+  ("C-2" . harpoon-go-to-2)
+  ("C-3" . harpoon-go-to-3)
+  ("C-4" . harpoon-go-to-4)
+  ("C-5" . harpoon-go-to-5)
+  ("C-6" . harpoon-go-to-6)
+  ("C-7" . harpoon-go-to-7)
+  ("C-8" . harpoon-go-to-8)
+  ("C-9" . harpoon-go-to-9)
+  ("C-0" . harpoon-add-file))
 
 ;; drag-stuff
 (use-package drag-stuff)
 (drag-stuff-global-mode 1)
 (drag-stuff-define-keys)
+
+;; elisp
+(define-key emacs-lisp-mode-map
+            (kbd "M-r")
+            'eval-last-sexp)
 
 ;; Helpers
 (defun create-keymap (keymap-name bindings)
@@ -129,11 +169,6 @@
     (progn (pop-to-buffer compilation-buffer)
            (delete-other-windows))
       (message "No compilation buffer exists."))))
-
-(defun command-and-close-others (command)
-  (interactive)
-  (call-interactively command)
-  (delete-other-windows-internal))
 
 ;; buffer-map
 (create-keymap 'buffer-map
@@ -433,4 +468,12 @@
   (lsp-enable-which-key-integration t))
 
 ;; eca
-(use-package eca)
+(defun eca-max ()
+  (interactive)
+  (command-and-close-others 'eca))
+
+(use-package eca
+  :bind
+  ("C-å" . eca-max)
+  (:map eca-chat-mode-map
+   ("C-å" . previous-buffer)))
