@@ -19,6 +19,7 @@
 (setopt use-short-answers t)
 (global-visual-line-mode 1)
 (which-key-mode)
+(savehist-mode 1)
 
 ;; misc hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -177,6 +178,9 @@
                  ("j" . meow-last-buffer)))
 
 ;; compile-map
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
+
 (add-to-list 'compilation-error-regexp-alist
              'my-purs-errors)
 
