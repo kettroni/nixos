@@ -16,12 +16,13 @@
 
 ;; theme
 (setq custom-safe-themes t)
-(use-package gruber-darker-theme
-  :init (load-theme 'gruber-darker))
+(add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
+(load-theme 'gruber-darker)
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 5)))
-
+  :custom
+  ((doom-modeline-height 25)
+   (doom-modeline-bar-width 4)))
 
 ;; fonts
 (set-face-attribute 'default nil :font "Fira Code" :height 170)
@@ -59,7 +60,6 @@
 
 ;; auto-recompile
 (load "~/.config/emacs/auto-recompile/auto-recompile.el")
-(use-package auto-recompile)
 
 ;; direnv
 (use-package direnv

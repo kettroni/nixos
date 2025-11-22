@@ -1,6 +1,6 @@
-{ pkgs, inputs, ... }:
-
-{
+{ pkgs, inputs, ... }: let
+  cfg-path = ".config/emacs/";
+in {
   nixpkgs.overlays = [ (import inputs.emacs-overlay) ];
   home.packages = [
     pkgs.nerd-fonts.symbols-only
@@ -13,14 +13,16 @@
     pkgs.fd
     pkgs.unzip
   ];
-  
-  home.file.".config/emacs/init.el" = {
-    source = ./init.el;
-  };
-  
+
   home.file = {
-    ".config/emacs/auto-recompile/auto-recompile.el" = {
+    "${cfg-path}init.el" = {
+      source = ./init.el;
+    };
+    "${cfg-path}auto-recompile/auto-recompile.el" = {
       source = ./auto-recompile/auto-recompile.el;
+    };
+    "${cfg-path}themes/gruber-darker-theme.el" = {
+      source = ./gruber-darker/gruber-darker-theme.el;
     };
   };
 }

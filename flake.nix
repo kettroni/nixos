@@ -1,13 +1,6 @@
 {
   description = "Nixos config flake";
 
-  # nix.settings.substituters = [
-  #   "https://nix-community.cachix.org"
-  # ];
-  # nix.settings.trusted-public-keys = [
-  #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-  # ];
-
   nixConfig = {
     # Use 'extra-substituters' to ADD to the default caches (like cache.nixos.org)
     extra-substituters = [
