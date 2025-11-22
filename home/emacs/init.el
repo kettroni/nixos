@@ -13,24 +13,37 @@
 (setopt use-short-answers t)
 (setq frame-resize-pixelwise t)
 (global-visual-line-mode 1)
+(which-key-mode)
 
 ;; theme
 (setq custom-safe-themes t)
 (add-to-list 'custom-theme-load-path "~/.config/emacs/themes")
 (load-theme 'gruber-darker)
+
+;; doom-modeline
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :custom
-  ((doom-modeline-height 25)
-   (doom-modeline-bar-width 4)))
+  (doom-modeline-height 25)
+  (doom-modeline-bar-width 4)
+  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-buffer-encoding nil))
 
 ;; fonts
 (set-face-attribute 'default nil :font "Fira Code" :height 170)
 (set-face-attribute 'fixed-pitch nil :font "Fira Code" :height 170)
 (set-face-attribute 'variable-pitch nil :font "Fira Code" :height 170 :weight 'regular)
 
+;; rainbow-delimiters
+(use-package rainbow-delimiters
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
 ;; ido
 (ido-mode 1)
+(use-package ido-vertical-mode
+  :init (ido-vertical-mode 1)
+  :custom
+  (ido-vertical-show-count t))
 (ido-everywhere 1)
 (setq ido-enable-flex-matching t)
 (setq ido-separator "\n")
@@ -43,6 +56,14 @@
 ;; amx
 (use-package amx
   :config (amx-mode 1))
+
+;; smartparens
+(use-package smartparens
+  :config
+  (smartparens-global-mode t)
+  (show-smartparens-global-mode t)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'smartparens-mode)
+  (sp-pair "'" nil :actions :rem))
 
 ;; company
 (use-package company
