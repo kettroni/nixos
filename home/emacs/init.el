@@ -1,5 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
+;; TODO: move hard-coded things here
+;; variables to set
+(setq my-lisp-load-path "~/.config/emacs/elisp/")
+
 ;; fullscreen and as much space needed
 (setq frame-resize-pixelwise t)
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -98,13 +102,11 @@
 
 ;; company
 (use-package company
-  :config (global-company-mode))
+  :config
+  (global-company-mode)
 
-;; icicles (completion for minibuffer)
-(use-package icicles
-  ;; TODO: try out at some point
-  ;; :config (icy-mode)
-  )
+  :bind
+  ("<backtab>" . company-complete))
 
 (defun command-and-close-others (command)
   (interactive)
@@ -122,7 +124,8 @@
   (command-and-close-others 'magit-status))
 
 ;; auto-recompile
-(load "~/.config/emacs/auto-recompile/auto-recompile.el")
+(use-package auto-recompile
+  :load-path my-lisp-load-path)
 
 ;; direnv
 (use-package direnv
@@ -163,7 +166,7 @@
         bindings))
 (defun open-init-file ()
   (interactive)
-  (find-file "/home/kettroni/nixos/home/emacs/init.el"))
+  (find-file "~/nixos/home/emacs/init.el"))
 (defun compile-with-input ()
   (interactive)
   (let ((current-prefix-arg '(4)))
@@ -184,8 +187,31 @@
                  ("j" . meow-last-buffer)))
 
 ;; compile-map
-(setq shell-file-name "bash")
-(setq shell-command-switch "-ic")
+(defun my-shell-command-interactive-a (fn &rest args)
+  "Use interactive shell for `shell-command' when invoked interactively.
+Setting the \"-i\" switch all the time will significantly slow
+down `shell-command' because there may too many files to source."
+  (let ((shell-command-switch (if (called-interactively-p 'interactive)
+                                  ;; Replace the first "-"
+                                  (replace-regexp-in-string
+                                   "\\(-\\).*\\'"
+                                   "-i"
+                                   shell-command-switch
+                                   nil
+                                   nil
+                                   1)
+                                shell-command-switch)))
+    (apply fn args)))
+
+(dolist (cmd '(shell-command
+               async-shell-command
+               compile
+               project-shell-command
+               project-async-shell-command))
+   (advice-add cmd :around #'my-shell-command-interactive-a))
+
+;; save on compilation without asking if you want to
+(setq compilation-ask-about-save nil)
 
 (add-to-list 'compilation-error-regexp-alist
              'my-purs-errors)
@@ -199,12 +225,13 @@
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region (point-min) (point-max))))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
 (create-keymap 'compile-map
                '(("k" . compile)
-                 ("s" . compile-with-input)
+                 ("l" . compile-with-input)
                  ("f" . open-compilation-buffer)
-                 ("l" . recompile)
-                 ("j" . amx)))
+                 ("j" . recompile)
+                 ("s" . amx)))
 
 ;; eval-map
 (create-keymap 'eval-map
@@ -483,7 +510,29 @@
   (command-and-close-others 'eca))
 
 (use-package eca
+  :custom
+  ;; (eca-custom-command '("~/eca/eca-native-linux-aarch64/eca" "server"))
+  (eca-extra-args '("--verbose" "--log-level" "debug"))
   :bind
   ("C-å" . eca-max)
   (:map eca-chat-mode-map
    ("C-å" . previous-buffer)))
+
+;; kmonad
+(use-package kbd-mode
+  :load-path my-lisp-load-path
+  :custom
+  (kbd-mode-kill-kmonad "pkill -9 kmonad")
+  (kbd-mode-start-kmonad "kmonad ~/path/to/config.kbd"))
+
+;; hideshow
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+;; (defun toggle-fold ()
+;;   (interactive)
+;;   (save-excursion
+;;     (end-of-line)
+;;     (hs-toggle-hiding)))
+
+(define-key hs-minor-mode-map
+            (kbd "F")
+            'hs-toggle-hiding)

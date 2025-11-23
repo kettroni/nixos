@@ -20,11 +20,13 @@ in {
     "${cfg-path}init.el" = {
       source = ./init.el;
     };
-    "${cfg-path}auto-recompile/auto-recompile.el" = {
-      source = ./auto-recompile/auto-recompile.el;
+    "${cfg-path}elisp" = {
+      source = ./elisp;
+      recursive = true;
     };
-    "${cfg-path}themes/gruber-darker-theme.el" = {
-      source = ./gruber-darker/gruber-darker-theme.el;
+    "${cfg-path}themes" = {
+      source = ./themes;
+      recursive = true;
     };
   };
 }
