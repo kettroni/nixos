@@ -5,7 +5,7 @@ in {
     ./alacritty.nix
     ./emacs
     ./fonts.nix
-    ./keyboard/keyboard.nix
+    ./keyboard
     ./qtile
     ./git.nix
   ];
