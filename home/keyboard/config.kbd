@@ -7,7 +7,7 @@
 )
 
 (defsrc
-    a    s    d    f    g    h    j    k    l   -
+    a    s    d    f    g    h    j    k    l    m
 )
 
 (defalias
@@ -19,9 +19,9 @@
     sft_j (tap-hold-next-release 200 j lsft)
     ctl_k (tap-hold-next-release 200 k lctl)
     alt_l (tap-hold-next-release 200 l lalt)
-    met_- (tap-hold-next-release 200 - lmet)
+    met_m (tap-hold-next-release 200 m lmet)
 )
 
 (deflayer homerowmods
-    @met_a   @alt_s   @ctl_d   @sft_f   g   h   @sft_j   @ctl_k   @alt_l @met_-
+    @met_a   @alt_s   @ctl_d   @sft_f   g   h   @sft_j   @ctl_k   @alt_l    @met_m
 )

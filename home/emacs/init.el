@@ -48,8 +48,8 @@
   (set-face-attribute 'mode-line-active nil :font "Fira Code" :height 140)
 
   :custom
-  (doom-modeline-height 1)
-  (doom-modeline-bar-width 4)
+  ;; (doom-modeline-height 1)
+  ;; (doom-modeline-bar-width 4)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
   (doom-modeline-buffer-encoding nil)
   (doom-modeline-modal-modern-icon nil)
@@ -460,7 +460,7 @@ down `shell-command' because there may too many files to source."
         ("M-r" . cider-eval-dwim)
         ("M-t" . cider-reload-and-rerun-test)
         ("M-K" . cider-doc-fs)
-        ("M-L" . cider-load-buffer)
+        ("M-l" . cider-load-buffer)
    :map cider-repl-mode-map
         ("M-o" . cider-switch-clj)))
 
@@ -505,25 +505,18 @@ down `shell-command' because there may too many files to source."
   (lsp-enable-which-key-integration t))
 
 ;; eca
-(defun eca-max ()
-  (interactive)
-  (command-and-close-others 'eca))
-
 (use-package eca
-  :custom
-  ;; (eca-custom-command '("~/eca/eca-native-linux-aarch64/eca" "server"))
-  (eca-extra-args '("--verbose" "--log-level" "debug"))
   :bind
-  ("C-å" . eca-max)
+  ("C-å" . eca)
   (:map eca-chat-mode-map
-   ("C-å" . previous-buffer)))
+   ("C-å" . eca-chat-toggle-window)))
 
 ;; kmonad
 (use-package kbd-mode
   :load-path my-lisp-load-path
   :custom
   (kbd-mode-kill-kmonad "pkill -9 kmonad")
-  (kbd-mode-start-kmonad "kmonad ~/path/to/config.kbd"))
+  (kbd-mode-start-kmonad "sudo kmonad ~/nixos/home/keyboard/config.kbd"))
 
 ;; hideshow
 (add-hook 'prog-mode-hook 'hs-minor-mode)
