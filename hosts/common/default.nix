@@ -20,9 +20,6 @@
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    useXkbConfig = true; # use xkb.options in tty.
-  };
 
   # Enable bluetooth
   hardware = {
@@ -38,13 +35,6 @@
   };
 
   services = {
-    xserver = {
-      enable = true;
-      windowManager.qtile = {
-        enable = true;
-      };
-    };
-
     # Auto login
     displayManager.autoLogin = {
       enable = true;

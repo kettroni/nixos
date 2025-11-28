@@ -4,7 +4,7 @@
   imports =
     [
       ../common
-      ./hardware-configuration.nix
+      ../laptop/hardware-configuration.nix # TODO change when using other device
     ];
 
   console.useXkbConfig = true;
@@ -15,8 +15,11 @@
 
     xserver = {
       enable = true;
-      windowManager.qtile = {
-        enable = true;
+      windowManager = {
+        backend = "wayland";
+        qtile = {
+          enable = true;
+        };
       };
     };
 
@@ -29,7 +32,6 @@
         };
       };
     };
-
   };
 
   system.stateVersion = "24.05"; # Did you read the comment?

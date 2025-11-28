@@ -12,6 +12,7 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -32,6 +33,7 @@
 
   outputs = { self, nixpkgs, kmonad, ... }@inputs: {
     nixosConfigurations = {
+
       laptop = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
@@ -49,6 +51,7 @@
           kmonad.nixosModules.default
         ];
       };
+
     };
   };
 }
