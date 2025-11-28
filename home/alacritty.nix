@@ -45,10 +45,10 @@
     bash = {
       enable = true;
       shellAliases = {
-        sw = "sudo nixos-rebuild switch --flake /home/kettroni/nixos#default";
+        sw = "sudo nixos-rebuild switch --flake /home/kettroni/nixos#laptop";
         eh = "sudo vim /home/kettroni/nixos/home";
         eq = "sudo vim /home/kettroni/nixos/home/qtile/config.py";
-        en = "sudo vim /home/kettroni/nixos/hosts/default/configuration.nix";
+        en = "sudo vim /home/kettroni/nixos/hosts/laptop/configuration.nix";
       };
     };
 

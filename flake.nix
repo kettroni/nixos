@@ -31,13 +31,24 @@
   };
 
   outputs = { self, nixpkgs, kmonad, ... }@inputs: {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./hosts/default/configuration.nix
-        inputs.home-manager.nixosModules.default
-        kmonad.nixosModules.default
-      ];
+    nixosConfigurations = {
+      laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/laptop/configuration.nix
+          inputs.home-manager.nixosModules.default
+          kmonad.nixosModules.default
+        ];
+      };
+
+      desktop = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/desktop/configuration.nix
+          inputs.home-manager.nixosModules.default
+          kmonad.nixosModules.default
+        ];
+      };
     };
   };
 }

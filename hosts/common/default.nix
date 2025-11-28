@@ -1,11 +1,6 @@
 { lib, pkgs, inputs, ... }:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-    ];
-
   nix.package = pkgs.nixVersions.latest;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -43,19 +38,6 @@
   };
 
   services = {
-    # Enable touchpad support (enabled default in most desktopManager).
-    libinput.enable = true;
-
-    kmonad = {
-      enable = true;
-      keyboards = {
-        myKMonadOutput = {
-          device = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
-          config = builtins.readFile ../../home/keyboard/config.kbd;
-        };
-      };
-    };
-
     xserver = {
       enable = true;
       windowManager.qtile = {
@@ -113,6 +95,4 @@
       "kettroni" = import ../../home/default.nix;
     };
   };
-
-  system.stateVersion = "24.05"; # Did you read the comment?
 }
