@@ -520,12 +520,10 @@ down `shell-command' because there may too many files to source."
 
 ;; hideshow
 (add-hook 'prog-mode-hook 'hs-minor-mode)
-;; (defun toggle-fold ()
-;;   (interactive)
-;;   (save-excursion
-;;     (end-of-line)
-;;     (hs-toggle-hiding)))
-
 (define-key hs-minor-mode-map
             (kbd "F")
             'hs-toggle-hiding)
+
+;; mkprj
+(use-package mkprj
+  :load-path my-lisp-load-path)
