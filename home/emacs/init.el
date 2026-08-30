@@ -386,7 +386,7 @@ down `shell-command' because there may too many files to source."
 (with-eval-after-load 'meow
   ;; Copy original meow-char-thing-table and modify
   (setq meow-char-thing-table
-    '((?f . round)
+        '((?f . round)
           (?d . square)
           (?s . curly)
           (?a . string)
@@ -454,6 +454,9 @@ down `shell-command' because there may too many files to source."
 (use-package cider
   :init
   (setq cider-default-cljs-repl 'nbb)
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook 'cider-load-buffer nil 'make-it-local)))
   :bind
   (:map clojure-mode-map
         ("M-o" . cider-switch-repl)
@@ -463,6 +466,24 @@ down `shell-command' because there may too many files to source."
         ("M-l" . cider-load-buffer)
    :map cider-repl-mode-map
         ("M-o" . cider-switch-clj)))
+
+;; common lisp
+(use-package sly
+  :init
+  (setq sly-default-lisp 'sbcl
+        sly-port 40429
+        sly-lisp-implementations
+        '((sbcl ("sbcl" "--dynamic-space-size" "4096"))))
+  :bind
+  (:map lisp-mode-map
+        ("M-o" . sly-mrepl)
+        ("M-r" . sly-eval-last-expression)
+        ("M-K" . sly-documentation)
+        ("M-C-K" . sly-documentation-lookup)))
+
+(with-eval-after-load 'sly-mrepl
+  (define-key sly-mrepl-mode-map (kbd "M-o") 'meow-last-buffer)
+  (define-key sly-mrepl-mode-map (kbd "M-i") 'sly-mrepl-clear-repl))
 
 ;; jank
 (add-to-list 'auto-mode-alist '("\\.jank\\'" . clojure-mode))
@@ -520,10 +541,12 @@ down `shell-command' because there may too many files to source."
 
 ;; hideshow
 (add-hook 'prog-mode-hook 'hs-minor-mode)
-(define-key hs-minor-mode-map
-            (kbd "F")
-            'hs-toggle-hiding)
 
-;; mkprj
+(define-key meow-normal-state-keymap (kbd "M-t") 'hs-toggle-hiding)
+(define-key meow-normal-state-keymap (kbd "C-M-t") 'hs-hide-all)
+
 (use-package mkprj
   :load-path my-lisp-load-path)
+
+;; pdf tools
+(use-package pdf-tools)

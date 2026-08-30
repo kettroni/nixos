@@ -12,7 +12,7 @@
 
   networking = {
     hostName = "nixos";
-    networkmanager.enable = true;
+    networkmanager.enable = true; # nmtui
   };
 
   # Set your time zone.
